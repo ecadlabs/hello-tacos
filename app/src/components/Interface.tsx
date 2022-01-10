@@ -17,6 +17,7 @@ const Interface = ({
   const [tacosToOrder, setTacosToOrder] = useState(0);
   const [insufficientTacos, setInsufficientTacos] = useState(false);
   const [orderingTacos, setOrderingTacos] = useState(false);
+  const [orderingTacosError, setOrderingTacosError] = useState(false);
 
   const orderTacos = async () => {
     if (
@@ -26,14 +27,17 @@ const Interface = ({
       !insufficientTacos
     ) {
       try {
-        setOrderingTacos(true);
+        throw new Error("Test error");
+        /*setOrderingTacos(true);
         const contract = await Tezos.wallet.at(contractAddress);
         const op = await contract.methods.default(tacosToOrder).send();
         await op.confirmation();
         setContractStorage(contractStorage - tacosToOrder);
-        setTacosToOrder(0);
+        setTacosToOrder(0);*/
       } catch (error) {
         console.error(error);
+        setInsufficientTacos(false);
+        setOrderingTacosError(true);
       } finally {
         setOrderingTacos(false);
       }
@@ -73,6 +77,10 @@ const Interface = ({
           {insufficientTacos ? (
             <div style={{ color: "red" }}>
               Error: not enough tacos! Try again
+            </div>
+          ) : orderingTacosError ? (
+            <div style={{ color: "red" }}>
+              An error occured while ordering your tacos
             </div>
           ) : (
             <br />
