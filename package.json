@@ -4,11 +4,9 @@
   "description": "Hello world contract in Ligo",
   "main": "index.js",
   "scripts": {
-    "test": "jest ./hello-tacos.test.js",
-    "compile-contract": "ligo compile-contract ./contract/hello-tacos.mligo main",
+    "test": "jest ./tests/hello-tacos.test.js",
     "compile-contract-to-json": "ligo compile-contract ./contract/hello-tacos.mligo main > ./contract/contract.json --michelson-format=json",
-    "ligo-test": "ligo run test ./contract/hello-tacos-test.mligo",
-    "start-flextesa": "docker run --rm --name hangzhou-sandbox --detach -p 20000:20000 tqtezos/flextesa:20211119 hangzbox start"
+    "ligo-test": "ligo run test ./contract/hello-tacos-test.mligo"
   },
   "keywords": [
     "Tezos",
@@ -20,6 +18,9 @@
     "jest": "^27.4.4"
   },
   "dependencies": {
+    "@taqueria/plugin-flextesa": "file:../taqueria/taqueria-plugin-flextesa",
+    "@taqueria/plugin-ligo": "file:../taqueria/taqueria-plugin-ligo",
+    "@taqueria/plugin-taquito": "file:../taqueria/taqueria-plugin-taquito",
     "@taquito/signer": "^11.0.2",
     "@taquito/taquito": "^11.0.2"
   }
