@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest ./tests/hello-tacos.test.js",
     "compile-contract-to-json": "ligo compile-contract ./contract/hello-tacos.mligo main > ./contract/contract.json --michelson-format=json",
-    "ligo-test": "ligo run test ./contract/hello-tacos-test.mligo"
+    "ligo-test": "ligo run test ./contract/hello-tacos-test.mligo",
+    "originate": "taq originate | tail -2 | head -1 | cut -d ' ' -f 4 | tee app/src/contract.txt && cp .taq/config.json app/src/"
   },
   "keywords": [
     "Tezos",

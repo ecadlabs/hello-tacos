@@ -268,5 +268,82 @@ Lets clean up after ourselves:
 ## Start the Dapp
 
 1. `cd app`
-2. `npm i`
-3. TBC
+2. As this app was created with create-react-app, we must create a .env file to disable preflight checks (click [here](https://github.com/facebook/create-react-app/issues/6390) for more information):
+
+    `echo "git  > .env`
+3. Install NPM dependencies: `npm i`
+4. Start the app `npm run start`
+
+
+## Going further
+
+#### Environments
+Although we've done a good job taq'ifying things thus far, I think it would be great if we adjusted the DApp to utilize Taqueria's environment construct to conditionally use the smart contract originated on the sandbox if running in a "development" environment, otherwise use the production version.
+
+To do so, we'll need to capture the address of the newly originated contract when we deploy to the sandbox.
+
+> NOTE: Taqueria is in beta and therefore still in development. We're working on a built-in mechanism for Taqueria to track contract addresses and more.
+
+We'll a NPM script that we can use to originate our smart contract to our sandbox and store the address in app/src/contract.txt.
+
+Add the following to package.json's scripts property:
+```
+"taq originate": "taq -e development originate | tail -2 | head -1 | cut -d ' ' -f 4 | tee app/src/contract.txt"
+```
+
+
+Edit App.tsx:
+###### Before (line 14):
+```
+useEffect(() => {
+    (async () => {
+      const tezos = new TezosToolkit(rpcUrl);
+      setTezos(tezos);
+      // fetches the contract storage
+      const contract = await tezos?.wallet.at(contractAddress);
+      const storage: BigNumber | undefined = await contract?.storage();
+      if (storage) {
+        setContractStorage(storage.toNumber());
+      } else {
+        setContractStorage(undefined);
+      }
+    })();
+  }, []);
+```
+###### After:
+```
+useEffect(() => {
+    const contractUrl = require("./contract.txt").default.trim()
+    const config = require("./config.json")
+    const p = process.env.NODE_ENV !== 'production'
+      ? fetch(contractUrl)
+        .then(res => res.text())
+        .then(contractAddress => contractAddress.trim())
+        .then(setContractAddress)
+        .then(_ => {
+            const env = config.environment.default
+            const sandbox = config.environment[env].sandboxes[0]
+            const rpcUrl = config.sandbox[sandbox].rpcUrl
+            setRpcUrl(rpcUrl)
+            return rpcUrl
+        })
+      : Promise.resolve(rpcUrl)
+      p
+      .then(async (rpcUrl) => {
+        // Setting the toolkit
+        const tezos = new TezosToolkit(rpcUrl);
+        setTezos(tezos);
+        // fetches the contract storage
+        const contract = await tezos?.wallet.at(contractAddress);
+        const storage: BigNumber | undefined = await contract?.storage();
+        if (storage) {
+          setContractStorage(storage.toNumber());
+        } else {
+          setContractStorage(undefined);
+        }
+      })
+  }, [contractAddress])
+  ```
+
+  Now when we start our development server, we'll be able to test against
+  the version of our contract deployed to our sandbox.
