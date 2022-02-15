@@ -29,9 +29,9 @@ app/node_modules
 
 ## Install needed Taqueria plugins
 
-1. `taq install ../taqueria/taqueria-plugin-ligo`
-2. `taq install ../taqueria/taqueria-plugin-flextesa`
-3. `taq install ../taqueria/taqueria-plugin-taquito`
+1. `taq install @taqueria/plugin-ligo`
+2. `taq install @taqueria/plugin-flextesa`
+3. `taq install @taqueria/plugin-taquito`
 
 
 ## Remove unncessary scripts
