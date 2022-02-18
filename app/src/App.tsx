@@ -22,20 +22,36 @@ function App() {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const tezos = new TezosToolkit(rpcUrl);
-      setTezos(tezos);
-      // fetches the contract storage
-      const contract = await tezos?.wallet.at(contractAddress);
-      const storage: BigNumber | undefined = await contract?.storage();
-      if (storage) {
-        setContractStorage(storage.toNumber());
-      } else {
-        setContractStorage(undefined);
-      }
-    })();
-  }, []);
-
+    const contractUrl = require("./contract.txt").default.trim()
+    const config = require("./config.json")
+    const p = process.env.NODE_ENV !== 'production'
+      ? fetch(contractUrl)
+        .then(res => res.text())
+        .then(contractAddress => contractAddress.trim())
+        .then(setContractAddress)
+        .then(_ => {
+            const env = config.environment.default
+            const sandbox = config.environment[env].sandboxes[0]
+            const rpcUrl = config.sandbox[sandbox].rpcUrl
+            setRpcUrl(rpcUrl)
+            return rpcUrl
+        })
+      : Promise.resolve(rpcUrl)
+      p
+      .then(async (rpcUrl) => {
+        // Setting the toolkit
+        const tezos = new TezosToolkit(rpcUrl);
+        setTezos(tezos);
+        // fetches the contract storage
+        const contract = await tezos?.wallet.at(contractAddress);
+        const storage: BigNumber | undefined = await contract?.storage();
+        if (storage) {
+          setContractStorage(storage.toNumber());
+        } else {
+          setContractStorage(undefined);
+        }
+      })
+  }, [contractAddress])
   return Tezos ? (
     <div className="app">
       <Header

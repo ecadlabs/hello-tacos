@@ -79,7 +79,7 @@ const Wallet = ({
         }
       }
     })();
-  }, []);
+  }, [Tezos]);
 
   return connected ? (
     <button className="wallet" onClick={disconnect}>
