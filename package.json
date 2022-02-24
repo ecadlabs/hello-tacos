@@ -19,9 +19,9 @@
     "jest": "^27.4.4"
   },
   "dependencies": {
-    "@taqueria/plugin-flextesa": "file:../taqueria/taqueria-plugin-flextesa",
-    "@taqueria/plugin-ligo": "file:../taqueria/taqueria-plugin-ligo",
-    "@taqueria/plugin-taquito": "file:../taqueria/taqueria-plugin-taquito",
+    "@taqueria/plugin-flextesa": "^0.1.1",
+    "@taqueria/plugin-ligo": "^0.1.1",
+    "@taqueria/plugin-taquito": "^0.1.1",
     "@taquito/signer": "^11.0.2",
     "@taquito/taquito": "^11.0.2"
   }
